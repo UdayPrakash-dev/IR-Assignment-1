@@ -122,18 +122,19 @@ def proximity_matches(index,word_a,word_b,k):
     terms_a = index.pre.terms(word_a)
     terms_b = index.pre.terms(word_b)
 
-    if len(terms_a)>1 or len(terms>b):
+    if len(terms_a)>1 or len(terms_b)>1:
         raise ValueError("Operands must be single terms")
 
     if not terms_a or not terms_b:
         return {}
 
+    a, b = terms_a[0], terms_b[0]
     #first calculate intersection set, as in the others there is no point in searching
     inter = intersect(index.docs_for(a),index.docs_for(b))
 
     matches = {}
-    for doc in inter:
-        pos_b = index.position(b,doc_id)
+    for doc_id in inter:
+        pos_b = index.positions(b,doc_id)
         hits = []
         for p in index.positions(a,doc_id):
             #find the least position in the windows which matches the word b, and traverse till p+k, to find occurences.
